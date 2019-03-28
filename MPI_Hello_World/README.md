@@ -1,4 +1,4 @@
-# IPPD
+# MPI Hello World
 
 Compilação:
 
