@@ -19,16 +19,16 @@ int main(void){
       messagem = -1;
       printf("Processo %d enviou %d do processo %d\n",my_rank,messagem,prox);
       MPI_Send(&messagem,1,MPI_INT,prox,0,MPI_COMM_WORLD); //envia a mensagem para o proximo processo
-   	  MPI_Recv(&messagem,1,MPI_INT,proc_ant,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
+      MPI_Recv(&messagem,1,MPI_INT,proc_ant,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
       printf("Processo %d recebeu %d do processo %d\n",my_rank,messagem,proc_ant); //processo 0 recebe mensagem do ultimo processo
     }
     else{ 
-   	  MPI_Recv(&messagem,1,MPI_INT,rank_ant,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE); //recebe a mensagem do processo anterior
+      MPI_Recv(&messagem,1,MPI_INT,rank_ant,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE); //recebe a mensagem do processo anterior
       printf("Processo %d recebeu %d do processo %d\n",my_rank,messagem,rank_ant);
       printf("Processo %d enviou %d do processo %d\n",my_rank,messagem,prox);
       MPI_Send(&messagem,1,MPI_INT,prox,0,MPI_COMM_WORLD); //envia a mensagem para o proximo processo
     }
      
     MPI_Finalize();
-	return 0;
+    return 0;
 }
