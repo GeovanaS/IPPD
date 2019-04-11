@@ -89,7 +89,7 @@ void mergeSort(int *vet,int inicio,int fim,int threads){
 
 
 int main(){
-	int *vet,i,num_threads;
+  int *vet,i,num_threads;
   double inicio,fim,tempo;
 
   vet = (int *)malloc(sizeof(int)*TAM);
@@ -121,5 +121,5 @@ int main(){
 
   printf("Função demorou %f segundos para ordenar\n", fim-inicio);
   
-	return 0;
+  return 0;
 }
