@@ -94,7 +94,6 @@ int main(int argc, char const *argv[])
   if(my_rank==0){
     printf("Vetor Original:\n");
     imprimeVetor(vet,TAM);
-   // MPI_Recv(&vet,1,MPI_INT,1,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
   }
 
   tam = TAM/num_proc; 
