@@ -8,11 +8,11 @@
 #define NUM_THREADS 10
 
 void imprimeVetor(int *vet,int tam){
-	int i;
-	for(i=0;i<tam;i++){
-		printf("%d ", vet[i]);
-	}
-	printf("\n");
+  int i;
+  for(i=0;i<tam;i++){
+    printf("%d ", vet[i]);
+  }
+  printf("\n");
 }
 
 void merge(int *vet,int inicio,int meio,int fim){
@@ -76,6 +76,7 @@ void mergeSort(int *vet,int inicio,int fim,int threads){
         mergeSerial(vet,inicio,fim);
      }
      else{
+      meio = floor(inicio+fim)/2;
         #pragma omp parallel sections num_threads(NUM_THREADS)
         {
           #pragma omp section
@@ -120,6 +121,6 @@ int main(){
   fim = omp_get_wtime();
 
   printf("Função demorou %f segundos para ordenar\n", fim-inicio);
-  
+  free(vet);
   return 0;
 }
