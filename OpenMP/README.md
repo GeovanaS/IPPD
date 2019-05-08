@@ -1,6 +1,6 @@
 # OpenMP
 
-# Compilação:
+Compilação:
 
       gcc -fopenmp nomeArquivo.c 
   
