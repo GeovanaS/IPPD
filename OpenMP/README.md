@@ -1,11 +1,11 @@
-# OPENMP
+# OpenMP
 
-Compilação:
+# Compilação:
 
-   gcc -fopenmp nomeArquivo.c 
+      gcc -fopenmp nomeArquivo.c 
   
-   icc -qopenmp nomeArquivo.c
+      icc -qopenmp nomeArquivo.c
 
-   export OMP_NUM_THREADS=40
+      export OMP_NUM_THREADS=40
 
-   ./a.out
+      ./a.out
