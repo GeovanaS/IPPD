@@ -1,4 +1,4 @@
-#OpenMPI
+# OpenMPI
 
 Compilação:
 
