@@ -35,8 +35,7 @@ int main(int argc, char const *argv[])
     scanf("%d",&n);
 
     #pragma omp parallel num_threads(NUM_THREADS)
-    {
-    
+    {    
      soma = numPrime(n);
     }
    
