@@ -10,10 +10,7 @@ Utilizada para prever o maximo speedup teorico usando multiplos processadores.
 
 
 Questão 2: Diga e justifique um problema que é melhor resolvido usando memória compartilhada em detrimento de memória distribuída e programação heterogênea.
-Um problema serial existente, pois o OpenMP foi explicitamente projetado para permitir que os programadores paralelizem incrementalmente os programas seriais existentes, e isso é praticamente impossível com o MPI e OpenCL.
-//Um programa que não utilize muitas threads, pois um dos grandes problemas da memoria compartilhada é não possui boa escalabilidade.
-
-
-
-
+Merge Sort. Pois as threads no programa realizam o mesmo
+trabalho, então podem utilizar a memoria compartilhada, pois não afetaria o desempenho do programa. Já em um programa com threads que realizam trabalhos diferentes,
+seria mais apropriado utiliza uma memoria distribuida.
 
