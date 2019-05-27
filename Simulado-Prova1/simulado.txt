@@ -1,17 +1,16 @@
-Simulado da prova 1 de IPPD
+﻿Simulado da prova 1 de IPPD
 
 Questões Teóricas
 
 Questão 1: Explique a lei de Amdahl's.
 
 Esta lei diz que a menos que um programa serial seja completamente paralelizado, o aumento de desempenho será muito limitado, independentemente do número de núcleos que se tenha disponivel.
-
 É usada para encontrar a maxima melhora esperada para um sistema em geral quando apenas uma parte do mesmo é melhorado.
 Utilizada para prever o maximo speedup teorico usando multiplos processadores.
 
 
 Questão 2: Diga e justifique um problema que é melhor resolvido usando memória compartilhada em detrimento de memória distribuída e programação heterogênea.
-
+Um problema que não utilize muitas threads. Pois um dos grandes problemas da memoria compartilhada é não possui boa escalabilidade.
 
 
 
