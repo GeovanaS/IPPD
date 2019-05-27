@@ -10,7 +10,5 @@ Utilizada para prever o maximo speedup teorico usando multiplos processadores.
 
 
 Questão 2: Diga e justifique um problema que é melhor resolvido usando memória compartilhada em detrimento de memória distribuída e programação heterogênea.
-Merge Sort. Pois as threads no programa realizam o mesmo
-trabalho, então podem utilizar a memoria compartilhada, pois não afetaria o desempenho do programa. Já em um programa com threads que realizam trabalhos diferentes,
-seria mais apropriado utiliza uma memoria distribuida.
 
+Merge Sort. Pois as threads no programa realizam o mesmo trabalho, então podem utilizar a memoria compartilhada, pois não afetaria o desempenho do programa. Já em um programa com threads que realizam trabalhos diferentes, seria mais apropriado utiliza uma memoria distribuida.
