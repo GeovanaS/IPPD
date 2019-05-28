@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define _USE_MATH_DEFINES
+#include<math.h>
+
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>
 #else
@@ -11,27 +14,25 @@
 #define MAX_SOURCE_SIZE (0x100000)
 
 int main(void) {
-    // Create the two input vectors
-    int i;
-    const int LIST_SIZE = 256*256;
-    int *ip = NULL;
-    for(i=0;i<LIST_SIZE;i++){
-        ip[i] = i;
-    }
-    int *op = NULL;
-    for(i=0;i<LIST_SIZE;i++){
-        op[i] = i;
-    }
-    /*int *A = (int*)malloc(sizeof(int)*LIST_SIZE);
-    for(i = 0; i < LIST_SIZE; i++) {
-        A[i] = i;
+    int i,j;
+    const float W = 25, H = 25;
+
+    float **ip = (float**)malloc(H*sizeof(float));
+    for(i = 0; i < H; i++) {
+        ip[i] = (float *)malloc(W*sizeof(float));
+        for(j = 0; j < W; j++){
+            ip[i][j] = j;
+        }
     }
 
-    int *B = (int*)malloc(sizeof(int)*LIST_SIZE);
-    for(i = 0; i < LIST_SIZE; i++) {
-        B[i] = i;
+    float **op = (float**)malloc(H*sizeof(float));
+    for(i = 0; i < H; i++) {
+        op[i] = (float *)malloc(W*sizeof(float));
+        for(j = 0; j < W; j++){
+            op[i][j] = j;
+        }
     }
-    */
+  
     // Load the kernel source code into the array source_str
     FILE *fp;
     char *source_str;
@@ -45,18 +46,6 @@ int main(void) {
     source_str = (char*)malloc(MAX_SOURCE_SIZE);
     source_size = fread( source_str, 1, MAX_SOURCE_SIZE, fp);
     fclose( fp );
-
-    //Discover platforms
-    cl::vector<cl::Platform> platforms;
-    cl::Platform::get(&platforms);
-
-    //Create a context
-    cl::context_properties cps[3] = {CL_CONTEXT_PLATFORM,(cl_context_properties)(platforms[0]) (),0};
-
-    cl::Context context(CL_DEVICE_TYPE_ALL,cps);
-
-    cl::vector<cl::Device> devices = context.getInfo<CL_CONTEXT_DEVICES>();
-
 
     // Get platform and device information
     cl_platform_id platform_id = NULL;
@@ -74,22 +63,17 @@ int main(void) {
     cl_command_queue command_queue = clCreateCommandQueue(context, device_id, 0, &ret);
 
     // Create memory buffers on the device for each vector 
+    //We assume that A,B,C are float arrays which 
+    //have been declared and initialized 
     cl_mem d_ip = clCreateBuffer(context, CL_MEM_READ_ONLY, 
-            W*H*sizeof(int), NULL, &ret);
-    cl_mem d_op = clCreateBuffer(context, CL_MEM_READ_ONLY, 
-            W*H * sizeof(int), NULL, &ret);
+            W*H * sizeof(float), NULL, &ret);
 
-    /*cl_mem a_mem_obj = clCreateBuffer(context, CL_MEM_READ_ONLY, 
-            LIST_SIZE * sizeof(int), NULL, &ret);
-    cl_mem b_mem_obj = clCreateBuffer(context, CL_MEM_READ_ONLY, 
-            LIST_SIZE * sizeof(int), NULL, &ret);
+    cl_mem d_op = clCreateBuffer(context, CL_MEM_WRITE_ONLY, 
+             W*H * sizeof(float), NULL, &ret);
 
-    cl_mem c_mem_obj = clCreateBuffer(context, CL_MEM_WRITE_ONLY, 
-            LIST_SIZE * sizeof(int), NULL, &ret);
-    */
     // Copy the lists A and B to their respective memory buffers
     ret = clEnqueueWriteBuffer(command_queue, d_ip, CL_TRUE, 0,
-            W*H*sizeof(float), ip, 0, NULL, NULL);
+             W*H * sizeof(float), ip, 0, NULL, NULL);
 
     // Create a program from the kernel source
     cl_program program = clCreateProgramWithSource(context, 1, 
@@ -101,44 +85,39 @@ int main(void) {
     // Create the OpenCL kernel
     cl_kernel kernel = clCreateKernel(program, "image_rotate", &ret);
 
+    float theta = 32 * 3.14159265359 / 180;
+    //The angle of rotation is theta 
+    float cos_theta=(cos(45));
+    float sin_theta=(sin(45));
+
     // Set the arguments of the kernel
-    /*ret = clSetKernelArg(kernel, 0, sizeof(cl_mem), (void *)&a_mem_obj);
-    ret = clSetKernelArg(kernel, 1, sizeof(cl_mem), (void *)&b_mem_obj);
-    ret = clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&c_mem_obj);
-    */
-    // Execute the OpenCL kernel on the list
-    size_t global_item_size = LIST_SIZE; // Process the entire lists
-    size_t local_item_size = 64; // Process in groups of 64
-   /* ret = clEnqueueNDRangeKernel(command_queue, kernel, 2, NULL, 
-            &global_item_size, &local_item_size, 0, NULL, NULL);
-   */
+    ret = clSetKernelArg(kernel, 0, sizeof(cl_mem), (void *)&d_op);
+    ret = clSetKernelArg(kernel, 1, sizeof(cl_mem), (void *)&d_ip);
+    ret = clSetKernelArg(kernel, 2, sizeof(cl_int), (void *)&W);
+    ret = clSetKernelArg(kernel, 3, sizeof(cl_int), (void *)&H);
+    ret = clSetKernelArg(kernel, 4, sizeof(cl_float), (void *)&cos_theta);
+    ret = clSetKernelArg(kernel, 5, sizeof(cl_float), (void *)&sin_theta);
+    
+    // Set local and global workgroup sizes
+    size_t globalws[2] = {W,H};
+    size_t localws[2] = {16,16};
+
+    ret = clEnqueueNDRangeKernel(command_queue, kernel, 2, NULL, 
+            globalws, localws, 0, NULL, NULL);
+
     // Read the memory buffer C on the device to the local variable C
     //int *C = (int*)malloc(sizeof(int)*LIST_SIZE);
-    /*ret = clEnqueueReadBuffer(command_queue, c_mem_obj, CL_TRUE, 0, 
-            LIST_SIZE * sizeof(int), C, 0, NULL, NULL);
-    */
-    float cos_theta = cos(theta);
-    float sin_theta = sin(theta);
-    
-    program_kernel.setArg(0,d_op);
-    program_kernel.setArg(1,d_ip);
-    program_kernel.setArg(2,W);
-    program_kernel.setArg(3,H);
-    program_kernel.setArg(4,cos_theta);
-    program_kernel.setArg(5,sin_theta);
-
-    cl::NDRange globalws(W,H);
-    cl::NDRange localws(16,16);
-
-    ret = clEnqueueNDRangeKernel(program_kernel, kernel, 2, NULL, 
-            &globalws, &localws, 0, NULL, NULL);
-
     ret = clEnqueueReadBuffer(command_queue, d_op, CL_TRUE, 0, 
-            W*H * sizeof(float), op, 0, NULL, NULL);
-    
-    // Display the result to the screen
-    for(i = 0; i < LIST_SIZE; i++)
-        printf("%d\n",ip[i]);
+            W * H * sizeof(float), op, 0, NULL, NULL);
+
+    for(int i = 0; i < H; i++){
+        for(int j = 0; j < W; j++){
+            for(int k = 0; k < W; k++){
+                printf("%.2f  %.2f\n", ip[i][k],op[k][j]);
+
+            }
+        }
+    }
 
     // Clean up
     ret = clFlush(command_queue);
@@ -147,9 +126,10 @@ int main(void) {
     ret = clReleaseProgram(program);
     ret = clReleaseMemObject(d_ip);
     ret = clReleaseMemObject(d_op);
-    //ret = clReleaseMemObject(c_mem_obj);
     ret = clReleaseCommandQueue(command_queue);
     ret = clReleaseContext(context);
     free(ip);
+    free(op);
     return 0;
+        
 }
