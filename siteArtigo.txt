@@ -1,0 +1,3 @@
+https://dl.acm.org/citation.cfm?id=777433
+                                                                             H-index   Class    
+Conferencia: SPAA - ACM Symposium on Parallel Algorithms and Architectures 	46	A2 
