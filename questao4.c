@@ -10,8 +10,8 @@ int liberaMatriz(float **m,int tam);
 
 int main(int argc, char const *argv[]){
 
-	float **kernel,entrada;
-	int i,j,tam,lin,col,rep,num_threads;
+   float **kernel,entrada;
+   int i,j,tam,lin,col,rep,num_threads;
 
     kernel = (float **)malloc(sizeof(float)*TAM_KERNEL);
     for(i = 0; i < 3; i++){
@@ -27,11 +27,11 @@ int main(int argc, char const *argv[]){
     }
 
     for(i = 0; i < TAM_KERNEL; i++){
-       for(j = 0; j < TAM_KERNEL; j++){
-           if(i==1 && j==1){
+      for(j = 0; j < TAM_KERNEL; j++){
+          if(i==1 && j==1){
               kernel[i][j] = 0.2;
            }else{
-           	  kernel[i][j] = 0.1;
+              kernel[i][j] = 0.1;
            }
        }
     }
@@ -84,16 +84,16 @@ void aplicaKernel(float **kernel,float m[5][5],int tam,int rep){
    rep--;
    while(rep > 0){
    #pragma omp parallel for 
-   	for(i = 0; i < tam; ++i){
-	  for(j = 0; j < tam; ++j){
+   for(i = 0; i < tam; ++i){
+      for(j = 0; j < tam; ++j){
          if(i==0 || j==0 || i==(tam-1) || j==(tam-1)){
-           	 mAux[i][j] = 0;
- 		 }else{
-	         mAux[i][j] = m[i-1][j-1] * kernel[0][0] + m[i-1][j] * kernel[0][1] + m[i-1][j+1] * kernel[0][2] 
-		     + m[i][j-1] * kernel[1][0] + m[i][j] * kernel[1][1] + m[i][j+1] * kernel[1][2] 
-		     + m[i+1][j-1] * kernel[2][0]  + m[i+1][j] * kernel[2][1] + m[i+1][j+1]*kernel[2][2];
-		    }
-	    }      	
+            mAux[i][j] = 0;
+         }else{
+	    mAux[i][j] = m[i-1][j-1] * kernel[0][0] + m[i-1][j] * kernel[0][1] + m[i-1][j+1] * kernel[0][2] 
+            + m[i][j-1] * kernel[1][0] + m[i][j] * kernel[1][1] + m[i][j+1] * kernel[1][2] 
+            + m[i+1][j-1] * kernel[2][0]  + m[i+1][j] * kernel[2][1] + m[i+1][j+1]*kernel[2][2];
+         }
+       }      	
      }
 
     #pragma omp parallel for 
