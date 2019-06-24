@@ -1,3 +1,5 @@
+Bônus ganho: 0.5(apresentação) + 0.2(perguntas) + 0.1(pergunta) 
+
 Algoritmo do servidor central 
 
 - não é eficiente e não é escalavel, mas depende da aplicação.
@@ -23,12 +25,14 @@ Vantagem:
 
 Algoritmo de Maekawa
 
-Propriedades?
+Propriedades:
 - Não é necessario que todos os pares concedam o acesso a seção critica
 - Os processos só precisam obter permissão de subconjuntos de seus pares para entrar, desde que os subconjuntos usados por quaisquer dois processos se sobreponham.
 - Podemos considerar que os processos votam uns nos outros para entrar na seção critica
 - O algoritmo evita que dois processo entrem na seção critica ao mesmo, atraves do processo de intersecção de dois conjuntos de votantes
 - O algoritmo permite que um processo deposite no maximo um voto entre sucessivos recebimentos de uma mensagem de liberação.
+- Porque |Vi| = K?
+  - Para ser imparcial todos tem os mesmo tamanhos
 
 Funcionamento do Algoritmo:
 Para obter entrada na seção critica, um processo p1 envia mensagens de requisição para todos os K membros de Vi(incluindo ele mesmo). Pi não pode entrar na seção critica até que tenha recebido todas as K mensagens de resposta. Quando um processo Pj em Vi recebe a mensagem de requisição de Pi, ele envia uma mensagem de resposta imediatamente e muda o valor do "voto" para verdadeiro, a não ser que seu estado seja HELD ou que já tenha respondido("votado") desde a ultima vez que recebeu uma mensagem de liberação.
@@ -44,8 +48,7 @@ Comparativo com o algoritmo de Ricart e Agrawala:
 O atraso de cliente é o mesmo do algoritmo de Ricart e Agrawala, mas o atraso de sincronização é pior: um tempo de viagem de ida e volta, em vez de um único tempo de transmissão de mensagem
 
 Falhas:
-O algoritmo de Maekawa pode tolerae algumas falhas de processo por colapse: se um processo falho não estiver em um conjunto votante que seja exigido, então sua falha não afetará os outros processos.
+O algoritmo de Maekawa pode tolerar algumas falhas de processo por colapso: se um processo falho não estiver em um conjunto votante que seja exigido, então sua falha não afetará os outros processos.
 
 
-
-
+-----------------------------------------------------------------
