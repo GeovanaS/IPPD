@@ -52,3 +52,23 @@ O algoritmo de Maekawa pode tolerar algumas falhas de processo por colapso: se u
 
 
 -----------------------------------------------------------------
+ 
+Eleição baseada em anel
+
+- Necessario para escolher qual dos processos desempenhará a função de servidor
+- O primeiro que detectar que o mestre deixou de funcionar, comeca a eleição
+- Processo de maior numero é o cordenador
+- Termina quando chegar no proprio, faz rota inteira para verifica se processo é o maior, se for maior vira cadidanto a cordenador
+
+Desvantagens:
+- Passa duas vezes pelo anel
+- Processos tem que espera toda rota
+
+------------------------------------------------------
+Algoritmo do valentão
+
+- Permite que os processos falhem durante uma eleição, embora presuma que a distribuição de mensagens entre os processos seja confiável
+- Presume que o sistema é síncrono: ele usa tempos limites para detectar
+uma falha de processo
+- Presume que cada processo sabe quais processos têm identificadores mais altos e que pode se comunicar com todos esses processos
+
