@@ -181,7 +181,8 @@ o nosso é derivado: o protocolo Psync [Peterson et al. 1989], o protocolo Trans
 -Smith et al. 1990] e o protocolo de multicast confiável escalável [Floyd et al. 1997]. Os
 protocolos Psync e Trans também fornecem outras garantias de ordenação de entrega.
 
-ropriedades uniformes • A definição de acordo dada anteriormente se refere apenas ao
+Propriedades uniformes 
+• A definição de acordo dada anteriormente se refere apenas ao
 comportamento de processos corretos – processos que nunca falham. Considere o que
 aconteceria no algoritmo da Figura 15.9 se um processo não fosse correto e falhasse após
 ter entregue uma mensagem com R-deliver. Como todo processo que entrega mensagem
@@ -201,7 +202,7 @@ imediatamente antes dele falhar poderá observar uma atualização que nenhum ou
 É interessante notar que, se invertermos as linhas “R-deliver m” e “if (q ≠ p) then
 B-multicast(g, m); end if” na Figura 15.9, o algoritmo resultante não satisfará o acordo
 uniforme.
-Assim como existe uma versão uniforme do acordo, também existem versões uniformes de qualquer propriedade de multicast, incluindo validade e integridade e as propriedades de ordenação que iremos defini
+Assim como existe uma versão uniforme do acordo, também existem versões uniformes de qualquer propriedade de multicast, incluindo validade e integridade e as propriedades de ordenação que iremos definir.
 
 
 
