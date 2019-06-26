@@ -148,8 +148,61 @@ O algoritmo de multicast confiável que descrevemos é correto em um sistema ass
 
 O algoritmo de multicast confiável que descrevemos é correto em um sistema assíncrono, pois não fizemos suposições de temporização. Contudo, o algoritmo é ineficiente para propósitos práticos. Cada mensagem é enviada |g| vezes para cada processo
 
-Multicast confiável por meio de multicast IP • Uma realização alternativa de R-multicast é usar uma combinação multicast IP, confirmações “de carona” (isto é, confirmações anexadas em outras mensagens) e confirmações negativas. Esse protocolo R-multicast
+Multicast confiável por meio de multicast IP
+
+• Uma realização alternativa de R-multicast é usar uma combinação multicast IP, confirmações “de carona” (isto é, confirmações anexadas em outras mensagens) e confirmações negativas. Esse protocolo R-multicast
 é baseado na observação de que a comunicação por multicast IP é frequentemente bem-sucedida. No protocolo, os processos não enviam mensagens de confirmação separadas;
 em vez disso, elas colocam as confirmações “de carona” das mensagens que enviam para o grupo. Os processos enviam uma mensagem de resposta separada apenas quando detectam que perderam uma mensagem. Uma resposta indicando a ausência de uma mensagem esperada é conhecida como confirmação negativa
+
+A descrição presume que os grupos são fechados. Cada processo p mantém um número de sequência Sgp para cada grupo g ao qual pertence. O número de sequência inicialmente é zero. Cada processo também grava R gq, o número de sequência da última mensagem que recebeu do processo q enviada para o grupo g.
+Para p enviar uma mensagem com R-multicast para o grupo g, ele coloca o valor Sgp e a confirmação “de carona” na mensagem, na forma <q, R gq>. Uma confirmação informa, para um remetente q, o número de sequência da mensagem mais recente de q, destinada a g, que p entregou desde que fez um multicast. Então, o emissor p envia a mensagem por multicast IP para g, com seus valores “de carona”, e incrementa Sgppor u
+
+Os valores “de carona” em uma mensagem multicast permitem que os destinatá-
+rios saibam sobre as mensagens que não receberam. Um processo entrega uma mensagem com R-deliver, destinada a g, contendo o número de sequência S de p, se e somente se S = R^q g + 1, e incrementa R^gq por um, imediatamente após a distribuição. Se uma mensagem recebida tem S ≤ R gq, então r enviou a mensagem antes e a descarta. Se S > R q g + 1 ou se R > R gq com uma confirmação incluída <q, R>, então existe uma ou mais mensagens ainda não recebidas (e que provavelmente foram eliminadas, no primeiro
+caso). Ele mantém toda mensagem para a qual S > R gq + 1, em uma fila de espera (Figura
+15.10) – tais filas são frequentemente usadas para satisfazer garantias de distribuição de
+mensagem. Ele solicita as mensagens ausentes enviando confirmações negativas para o
+remetente original, ou para um processo q a partir do qual recebeu uma confirmação <q,
+R q g>, com R gq não menor do que o número de sequência exigido.
+ fila de espera não é rigorosamente necessária para a confiabilidade, mas simplifica o protocolo, permitindo-nos usar números de sequência para representar conjuntos
+de mensagens enviadas. Ela também nos fornece uma garantia da ordem de envio (veja
+a Seção 15.4.3).
+A propriedade da integridade resulta da detecção de duplicatas e das propriedades
+subjacentes do multicast IP (que usa somas de verificação para eliminar mensagens corrompidas). A propriedade da validade vale porque o multicast IP tem essa propriedade.
+Para o acordo, exigimos primeiro que um processo sempre possa detectar mensagens
+ausentes. Isso, por sua vez, significa que ele sempre receberá mais uma mensagem que
+permita detectar a omissão. Conforme o protocolo simplificado, garantimos a detecção
+de mensagens ausentes apenas no caso em que processos corretos enviam mensagens
+por multicast, indefinidamente. Segundo, a propriedade do acordo exige que sempre haja
+uma cópia disponível de toda mensagem necessária para um processo que não a recebeu.
+Portanto, presumimos que os processos mantêm indefinidamente as cópias das mensagens que enviaram – nesse protocolo simplificado.
+Nenhuma das suposições que fizemos para garantir o acordo é prática (veja o Exercício 15.15). Entretanto, o acordo é tratado praticamente em todos os protocolos dos quais
+o nosso é derivado: o protocolo Psync [Peterson et al. 1989], o protocolo Trans [Melliar-
+-Smith et al. 1990] e o protocolo de multicast confiável escalável [Floyd et al. 1997]. Os
+protocolos Psync e Trans também fornecem outras garantias de ordenação de entrega.
+
+ropriedades uniformes • A definição de acordo dada anteriormente se refere apenas ao
+comportamento de processos corretos – processos que nunca falham. Considere o que
+aconteceria no algoritmo da Figura 15.9 se um processo não fosse correto e falhasse após
+ter entregue uma mensagem com R-deliver. Como todo processo que entrega mensagem
+com R-deliver deve primeiro enviá-la com B-multicast, segue-se que todos os processos
+corretos terminarão por entregar a mensagem.
+Toda propriedade que vale, sejam os processos corretos ou não, é chamada de propriedade uniforme. Definimos o acordo uniforme como segue:
+Acordo uniforme: se um processo, correto ou falho, entregar uma mensagem m,
+então todos os processos corretos em group(m) entregarão.
+O acordo uniforme permite que um processo falhe após ter enviado uma mensagem,
+enquanto ainda garante que todos os processos corretos entregarão a mensagem. Argumentamos que o algoritmo da Figura 15.9 satisfaz essa propriedade, que é mais forte do
+que a propriedade do acordo não uniforme, definida anteriormente.
+O acordo uniforme é útil em aplicações em que um processo pode executar uma
+ação que produz uma inconsistência observável antes de falhar. Por exemplo, considere
+que os processos são servidores gerenciando cópias de uma conta bancária, e que as atualizações na conta são enviadas para o grupo de servidores usando multicast confiável.
+Se o multicast não satisfizer o acordo uniforme, então um cliente que acesse um servidor
+imediatamente antes dele falhar poderá observar uma atualização que nenhum outro servidor processará.
+É interessante notar que, se invertermos as linhas “R-deliver m” e “if (q ≠ p) then
+B-multicast(g, m); end if” na Figura 15.9, o algoritmo resultante não satisfará o acordo
+uniforme.
+Assim como existe uma versão uniforme do acordo, também existem versões uniformes de qualquer propriedade de multicast, incluindo validade e integridade e as propriedades de ordenação que iremos defini
+
+
 
 
