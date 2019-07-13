@@ -1,0 +1,5 @@
+1 - Em que situação um deadlock pode acontecer no algoritmo Ricart e Agrawala e como solucionar?
+2 - Em que situação um deadlock pode acontecer no algoritmo Maekawa e como solucionar?
+3 - Pergunta sobre o método Christian de sincronização de relogios.
+4 - Determinar os tempos lógicos e os eventos concorrentes usando Vector timestamps e Lamport timestamps. 
+5 - Pergunta sobre tolerância a falhas bizantinas.
